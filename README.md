@@ -1,4 +1,4 @@
-# ai_csv_chat
+# AI CSV Chat   
 Use AI agents to have an interactive data conversation with your local csv files
 
 ## Why?
@@ -47,3 +47,8 @@ uv pip install -r requirements.txt
 # gcloud config is set up with the project you want to use
 python csv_chat.py
 ```
+
+## Sample session
+
+Here's a sample session with a csv file containing a list of alerts from suricata
+![chat session](.images/sample_chat_session.png)
