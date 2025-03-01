@@ -50,9 +50,9 @@ agent = Agent(
     monitoring=False,
     instructions=[
         "You have a set of local csv files to answer questions about.",
-        "Use your file tools to list ONLY csv files and your duckdb tools analyze and answer questions",
-        "First always get the list of csv files, but only csv files",
-        "You can then use duckdb to open the csv files and create a table",
+        "Use your file tools to list ONLY csv files. Get a list of files yourself before asking for a filename",
+        "You can then use duckdb tools to open the csv files and create a table and describe it for context on the data",
+        "Use your duckdb tools analyze and answer questions",
         "Pay attention to columns with special characters or spaces since they will need to be quoted when accessing.",
         "You can then use duckdb to answer questions",
         "You can also search the internet with DuckDuckGo.",
