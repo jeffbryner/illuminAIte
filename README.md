@@ -51,4 +51,4 @@ python csv_chat.py
 ## Sample session
 
 Here's a sample session with a csv file containing a list of alerts from suricata
-![chat session](.images/sample_chat_session.png)
+![chat session](./images/sample_chat_session.png)
