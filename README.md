@@ -13,6 +13,10 @@ What if you could use AI to have a conversational interaction with your data in 
 
 AI csv chat aims to accomplish this by bringing data to an AI agent in conjunction with simple tools in a way that allows you to meet your data where it lies (.csv files), get insights as quickly as possible and do it without having to write complicated queries or learn yet another language.
 
+## Sample session
+
+Here's a sample session with a csv file containing a [sample set of alerts from suricata](https://github.com/Cyb3r-Monk/RITA-J/blob/main/sample-data/suricata%20alerts.csv)
+![chat session](./images/sample_chat_session.png)
 
 ## Installation
 Recommended to use a virtual python environment seeded with uv
@@ -48,7 +52,18 @@ uv pip install -r requirements.txt
 python csv_chat.py
 ```
 
-## Sample session
+## Configuration
+~coming soon~
 
-Here's a sample session with a csv file containing a list of alerts from suricata
-![chat session](./images/sample_chat_session.png)
+## Data sources
+It can use any local csv file.
+
+## Agents
+We are using the agent framework from [agno](https://github.com/agno-agi/agno).
+
+It includes storage for sessions, tools for interacting with the data and a memory of what has been said, key facts, etc. 
+
+Duckdb is used for the data analysis and stores tables locally after reading in the csv file you are chatting about. 
+
+To clear all the local memory just remove the ./tmp directory. 
+
