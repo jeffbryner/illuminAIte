@@ -1,5 +1,5 @@
-# AI CSV Chat   
-Use AI agents to have an interactive data conversation with your local csv files
+# IluminAIte  
+Use AI agents to have an interactive data conversation with your local data files
 
 ## Why?
 
@@ -11,7 +11,7 @@ What if you could use AI to have a conversational interaction with your data in 
 - Have a conversation about the data
 - Gain insights
 
-AI csv chat aims to accomplish this by bringing data to an AI agent in conjunction with simple tools in a way that allows you to meet your data where it lies (.csv files), get insights as quickly as possible and do it without having to write complicated queries or learn yet another language.
+IluminAIte aims to accomplish this by bringing data to an AI agent in conjunction with simple tools in a way that allows you to meet your data where it lies (.csv, .json files), get insights as quickly as possible and do it without having to write complicated queries or learn yet another language.
 
 ## Sample session
 
@@ -34,10 +34,11 @@ powershell -c "irm https://astral.sh/uv/install.ps1 | more"
 
 ```
 
-### Installing csv chat
+### Installing
 ```
-git clone https://github.com/jeffbryner/ai_csv_chat.git
-cd ai_csv_chat
+
+git clone git@github.com:jeffbryner/IlluminAIte.git
+cd IlluminAIte
 uv venv
 source .venv/bin/activate
 uv pip install -r requirements.txt
@@ -49,21 +50,21 @@ uv pip install -r requirements.txt
 # to use everything as default
 # assumes you will use gemini in vertexAI and your local 
 # gcloud config is set up with the project you want to use
-python csv_chat.py
+python illuminAIte.py
 ```
 
 ## Configuration
 ~coming soon~
 
 ## Data sources
-It can use any local csv file.
+It can use any local csv  or json file.
 
 ## Agents
 We are using the agent framework from [agno](https://github.com/agno-agi/agno).
 
 It includes storage for sessions, tools for interacting with the data and a memory of what has been said, key facts, etc. 
 
-Duckdb is used for the data analysis and stores tables locally after reading in the csv file you are chatting about. 
+Duckdb is used for the data analysis and stores tables locally after reading in the file you are chatting about.
 
 To clear all the local memory just remove the ./tmp directory. 
 
