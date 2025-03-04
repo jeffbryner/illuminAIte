@@ -1,4 +1,4 @@
-# IluminAIte  
+# illuminAIte  
 Use AI agents to have an interactive data conversation with your local data files
 
 ## Why?
@@ -11,7 +11,7 @@ What if you could use AI to have a conversational interaction with your data in 
 - Have a conversation about the data
 - Gain insights
 
-IluminAIte aims to accomplish this by bringing data to an AI agent in conjunction with simple tools in a way that allows you to meet your data where it lies (.csv, .json files), get insights as quickly as possible and do it without having to write complicated queries or learn yet another language.
+IlluminAIte aims to accomplish this by bringing data to an AI agent in conjunction with simple tools in a way that allows you to meet your data where it lies (.csv, .json files), get insights as quickly as possible and do it without having to write complicated queries or learn yet another language.
 
 ## Sample session
 
@@ -37,8 +37,8 @@ powershell -c "irm https://astral.sh/uv/install.ps1 | more"
 ### Installing
 ```
 
-git clone git@github.com:jeffbryner/IlluminAIte.git
-cd IlluminAIte
+git clone git@github.com:jeffbryner/illuminAIte.git
+cd illuminAIte
 uv venv
 source .venv/bin/activate
 uv pip install -r requirements.txt
