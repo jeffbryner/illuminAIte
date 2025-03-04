@@ -6,3 +6,4 @@ duckduckgo-search
 google-genai
 itsdangerous
 pandas
+openai
