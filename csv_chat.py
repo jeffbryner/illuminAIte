@@ -19,7 +19,11 @@ from agno.storage.agent.sqlite import SqliteAgentStorage
 from agno.memory.db.sqlite import SqliteMemoryDb
 
 from gemini_models import model_flash, model_pro
-from agno.tools.duckduckgo import DuckDuckGoTools
+
+# from agno.models.openai import OpenAIChat
+
+# from agno.tools.duckduckgo import DuckDuckGoTools
+from turbo_duck_tools import TurboDuckTools
 from agno.tools.file import FileTools
 from agno.tools.duckdb import DuckDbTools
 from utils import logger
@@ -34,12 +38,16 @@ agent_memory: str = "tmp/agent_memory.db"
 agent_database: str = "tmp/agent_database.db"
 # https://duckdb.org/docs/stable/configuration/overview.html#configuration-reference
 duckdb_config = {"external_threads": 1}
+
+# model_choice = OpenAIChat(id="gpt-4o")
+model_choice = model_flash
+
 agent = Agent(
-    model=model_flash,
+    model=model_choice,
     tools=[
-        FileTools(save_files=False),
+        FileTools(save_files=False, read_files=False),
         DuckDbTools(db_path=agent_database, config=duckdb_config),
-        DuckDuckGoTools(),
+        TurboDuckTools(),
     ],
     session_id="csv_chat_agent",
     session_name="csv_chat_agent",
@@ -49,14 +57,15 @@ agent = Agent(
     telemetry=False,
     monitoring=False,
     instructions=[
-        "You have a set of local csv files to answer questions about.",
-        "Use your file tools to list ONLY csv files. Get a list of files yourself before asking for a filename",
+        "You have a set of local csv and json files to answer questions about.",
+        "Use your file tools to list ONLY .csv or .json files. Never list other files."
+        "Get a list of files yourself before asking for a filename",
         "You can then use duckdb tools to open the csv files and create a table and describe it for context on the data",
         "Use your duckdb tools analyze and answer questions",
         "Pay attention to columns with special characters or spaces since they will need to be quoted when accessing.",
         "You can then use duckdb to answer questions",
         "You can also search the internet with DuckDuckGo.",
-        "Never send the csv files to the internet, or to the AI model directly.",
+        "Never send the local files to the internet, or to the AI model directly.",
     ],
     description="You are an expert in computer security and data analysis.",
     storage=SqliteAgentStorage(table_name="csv_chat_agent", db_file=agent_storage),
@@ -72,9 +81,9 @@ agent = Agent(
         create_session_summary=True,
         update_user_memories_after_run=True,
         update_session_summary_after_run=True,
-        classifier=MemoryClassifier(model=model_flash),
-        summarizer=MemorySummarizer(model=model_flash),
-        manager=MemoryManager(model=model_flash),
+        classifier=MemoryClassifier(model=model_choice),
+        summarizer=MemorySummarizer(model=model_choice),
+        manager=MemoryManager(model=model_choice),
     ),
 )
 
