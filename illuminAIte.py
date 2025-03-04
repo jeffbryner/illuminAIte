@@ -150,7 +150,7 @@ starlette_app = App(app_page_chat_ui, agno_chat_server)
 if __name__ == "__main__":
 
     run_app(
-        "csv_chat:starlette_app",
+        "illuminAIte:starlette_app",
         launch_browser=True,
         log_level="debug",
         reload=True,
