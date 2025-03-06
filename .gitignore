@@ -173,3 +173,5 @@ cython_debug/
 
 # custom
 tmp/*
+*.json
+*.csv
