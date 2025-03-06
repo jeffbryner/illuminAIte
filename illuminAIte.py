@@ -37,7 +37,7 @@ def as_stream(response):
 def chat_mod_ui(messages=[]):
     if messages:
         # filter out the system messages (not done for some reason in a module)
-        logger.info(messages)
+        logger.debug(messages)
         messages = [m for m in messages if m["role"] in ["user", "assistant"]]
         chat_ui = ui.chat_ui(id="chat", messages=messages, height="80vh", fill=True)
     else:
@@ -48,8 +48,9 @@ def chat_mod_ui(messages=[]):
 @module.server
 def chat_mod_server(input, output, session, messages):
 
-    logger.info(f"ENVIRON: {os.environ["_ILLUMINAI_TE_CONFIG"]}")
-    config = json.loads(os.environ["_ILLUMINAI_TE_CONFIG"])
+    # pull in our environment variables for configuration
+    logger.debug(f"ENVIRON: {os.environ["_ILLUMINAITE_CONFIG"]}")
+    config = json.loads(os.environ["_ILLUMINAITE_CONFIG"])
     logger.info(f"{config['provider']} {config['model_name']}")
     model_choice = get_model(config["provider"], config["model_name"])
     agent = get_agent(model_choice=model_choice)
@@ -102,10 +103,10 @@ def main():
         help="Specify the model name/id (e.g. gpt-4, gemini-1.5-pro, llama2)",
         default="gemini-1.5-flash",
     )
-    global config
+    # since this gets run by the shiny app, we need to pass the args as env vars
     config = parser.parse_args()
-    logger.info(f"Starting illuminAIte with config: {config}")
-    os.environ["_ILLUMINAI_TE_CONFIG"] = json.dumps(vars(config))
+    logger.debug(f"Starting illuminAIte with config: {config}")
+    os.environ["_ILLUMINAITE_CONFIG"] = json.dumps(vars(config))
 
     run_app(
         "illuminAIte:starlette_app",

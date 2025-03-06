@@ -100,7 +100,7 @@ def get_agent(model_choice: Model) -> Agent:
             "You have a set of local csv and json files to answer questions about.",
             "Use your file tools to list ONLY .csv or .json files. Never list other files."
             "Get a list of files yourself before asking for a filename",
-            "You can then use duckdb tools to open the csv files and create a table and describe it for context on the data",
+            "You can then use duckdb tools to open the files and create a table and describe it for context on the data",
             "Use your duckdb tools analyze and answer questions",
             "Pay attention to columns with special characters or spaces since they will need to be quoted when accessing.",
             "You can then use duckdb to answer questions",
@@ -108,7 +108,9 @@ def get_agent(model_choice: Model) -> Agent:
             "Never send the local files to the internet, or to the AI model directly.",
         ],
         description="You are an expert in computer security and data analysis.",
-        storage=SqliteAgentStorage(table_name="csv_chat_agent", db_file=agent_storage),
+        storage=SqliteAgentStorage(
+            table_name="illuminAIte_chat_agent", db_file=agent_storage
+        ),
         # Adds the current date and time to the instructions
         add_datetime_to_instructions=True,
         # Adds the history of the conversation to the messages
