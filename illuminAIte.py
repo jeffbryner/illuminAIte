@@ -126,7 +126,7 @@ def chat_mod_server(input, output, session, messages):
 # page layout
 app_page_chat_ui = ui.page_fluid(
     ui.card(
-        ui.card_header("CSV Chat"),
+        ui.card_header("IlluminAIte"),
         ui.output_ui("chat"),
     ),
 )
