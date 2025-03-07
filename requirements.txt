@@ -1,5 +1,5 @@
 shiny
-agno
+agno==1.1.8
 sqlalchemy
 duckdb
 duckduckgo-search
