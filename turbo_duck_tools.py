@@ -1,12 +1,12 @@
 from typing import Any, Dict, List, Optional, Tuple
-from agno.tools.duckduckgo import DuckDuckGoTools
+from agno.tools.duckdb import DuckDbTools
 from agno.tools import Toolkit
 from agno.utils.log import logger
 
 # add some utility functions to the DuckDuckGoTools
 
 
-class TurboDuckTools(DuckDuckGoTools):
+class TurboDuckTools(DuckDbTools):
     def load_local_json_to_table(
         self, path: str, table: Optional[str]
     ) -> Tuple[str, str]:

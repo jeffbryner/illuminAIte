@@ -86,8 +86,7 @@ def get_agent(model_choice: Model) -> Agent:
         model=model_choice,
         tools=[
             FileTools(save_files=False, read_files=False),
-            DuckDbTools(db_path=agent_database, config=duckdb_config),
-            TurboDuckTools(),
+            TurboDuckTools(db_path=agent_database, config=duckdb_config),
         ],
         session_id="illuminAIte_chat_agent",
         session_name="illuminAIte_chat_agent",
