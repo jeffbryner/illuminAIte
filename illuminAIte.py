@@ -145,15 +145,10 @@ def dataframe_display_mod_server(input, output, session, dataframe):
 ## chat module ##
 @module.ui
 def chat_mod_ui(messages=[]):
-
-    return ui.row(
-        ui.column(
-            8,
-            ui.chat_ui(
-                id="chat", messages=messages, height="80vh", width="100%", fill=True
-            ),
+    return (
+        ui.chat_ui(
+            id="chat", messages=messages, height="80vh", width="100%", fill=True
         ),
-        #        ui.column(4, plot_mod_ui("plot_session")),
     )
 
 
