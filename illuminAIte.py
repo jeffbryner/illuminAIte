@@ -104,24 +104,7 @@ def plot_mod_server(input, output, session, dataframe):
 ## chat module ##
 @module.ui
 def chat_mod_ui(messages=[]):
-    # if messages:
-    #     # filter out the system messages (not done for some reason in a module)
-    #     logger.debug(messages)
-    #     messages = [m for m in messages if m["role"] in ["user", "assistant"]]
-    #     chat_ui = ui.chat_ui(
-    #         id="chat", messages=messages, height="80vh", width="80vw", fill=True
-    #     )
-    # else:
-    #     messages = [
-    #         ui.TagList(
-    #             f"DataFrame:",
-    #             ui.output_ui("x_summary_data"),
-    #         ).get_html_string()
-    #     ]
-    #     chat_ui = ui.chat_ui(
-    #         id="chat", messages=messages, height="80vh", width="80vw", fill=True
-    #     )
-    # return chat_ui
+
     return ui.row(
         ui.column(
             8,
@@ -147,47 +130,18 @@ def chat_mod_server(input, output, session, messages):
 
     chat = ui.Chat(id="chat", messages=messages)
 
-    # # Load the Gapminder dataset
-    # df = px.data.gapminder()
-
-    # # Prepare a summary DataFrame
-    # summary_df = (
-    #     df.groupby("country")
-    #     .agg(
-    #         {
-    #             "pop": ["min", "max", "mean"],
-    #             "lifeExp": ["min", "max", "mean"],
-    #             "gdpPercap": ["min", "max", "mean"],
-    #         }
-    #     )
-    #     .reset_index()
-    # )
-
-    # summary_df.columns = ["_".join(col).strip() for col in summary_df.columns.values]
-    # summary_df.rename(columns={"country_": "country"}, inplace=True)
-    # state.dataframe.set(summary_df)
-
     plot_mod_server("plot_session", dataframe=state.dataframe)
 
     @chat.on_user_submit
     async def _():
         new_message = chat.user_input()
+        if "show dataframe" in new_message.lower() and len(state.dataframe()) > 0:
+            await chat.append_message(
+                ui.TagList(f"DataFrame:", ui.output_ui("x_summary_data"))
+            )
+            return
         chunks = agent.run(message=new_message, stream=True)
         await chat.append_message_stream(as_stream(chunks))
-        # await chat.append_message(
-        #     ui.TagList(f"DataFrame:", ui.output_ui("x_summary_data"))
-        # )
-        # append a chart
-        # fig = px.scatter([1, 2], [3, 4])
-        # fig_html = fig.to_html(full_html=False, include_plotlyjs="cdn")
-        # logger.info(f"fig_html: {fig_html}")
-        # logger.info(f"fig_html HTML: {ui.TagList(ui.HTML(fig_html)).get_html_string()}")
-        # await chat.append_message(ui.TagList(ui.HTML(fig_html)).get_html_string())
-
-        # # randomly sort the data to prove reactivity
-        # column_choice = random.choice(state.dataframe.get().columns)
-        # logger.info(f"sorting dataframe by: {column_choice}")
-        # state.dataframe.set(state.dataframe().sort_values(column_choice))
 
     @render.express
     def x_summary_data():
