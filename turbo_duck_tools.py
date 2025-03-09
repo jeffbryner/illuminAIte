@@ -26,7 +26,7 @@ class TurboDuckTools(DuckDbTools):
         )
         # add our shiny state to the tools
         self.state = state
-        self.register(self.update_plot_data)
+        self.register(self.load_dynamic_dataframe)
         self.register(self.load_local_json_to_table)
 
     def load_local_json_to_table(
@@ -63,14 +63,14 @@ class TurboDuckTools(DuckDbTools):
         logger.debug(f"Loaded JSON {path} into duckdb as {table}")
         return table, create_statement
 
-    def update_plot_data(self, query: str) -> str:
-        """Updates the plot data with the results of a query
+    def load_dynamic_dataframe(self, query: str) -> str:
+        """Updates the dynamic dataframe with the results of a query
 
-        :param query: Query to use to update the plot data, always use a limit of 1000 rows
+        :param query: Query to use to update the dataframe data, always use a limit of 1000 rows
         :return: A description of the update to use in chat.
         """
         # Execute query and update the reactive dataframe
         result_df = self.connection.sql(query).df()
         self.state.dataframe.set(result_df)
 
-        return f"Plot data updated with {len(result_df)} rows from query: {query}"
+        return f"Dataframe data updated with {len(result_df)} rows from query: {query}"
