@@ -112,13 +112,15 @@ def dataframe_display_mod_ui():
 def dataframe_display_mod_server(input, output, session, dataframe):
     @render.express
     def summary_data_card():
-        with x_ui.card(height="400px"):
+        with x_ui.card(full_screen=True):
+            with x_ui.accordion():
+                with x_ui.accordion_panel("DataFrame"):
 
-            @render.data_frame
-            def summary_data():
-                return render.DataGrid(
-                    dataframe.round(2),
-                )
+                    @render.data_frame
+                    def summary_data():
+                        return render.DataGrid(
+                            dataframe.round(2),
+                        )
 
 
 ## end dataframe module ##
@@ -164,7 +166,7 @@ def chat_mod_server(input, output, session, messages):
                 # Create unique ID for each dataframe display instance
                 display_id = f"dataframe_display_{uuid.uuid4().hex}"
                 await chat.append_message(
-                    ui.TagList(f"DataFrame:", dataframe_display_mod_ui(display_id))
+                    ui.TagList(dataframe_display_mod_ui(display_id))
                 )
                 # Initialize the module server with unique ID and unique dataframe
                 grid_dataframe = state.dataframe.get().copy()
@@ -174,6 +176,7 @@ def chat_mod_server(input, output, session, messages):
                 await chat.append_message(
                     "no dataframe to show, try instructing the agent to load data into the dataframe"
                 )
+                return
 
         if "show plot" in new_message.lower():
             if len(state.dataframe()) > 0:
@@ -189,6 +192,7 @@ def chat_mod_server(input, output, session, messages):
                 await chat.append_message(
                     "no dataframe to plot, try instructing the agent to load data into the dataframe"
                 )
+                return
         # else let the agent handle the response
         chunks = agent.run(message=new_message, stream=True)
         await chat.append_message_stream(as_stream(chunks))
