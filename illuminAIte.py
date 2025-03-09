@@ -34,28 +34,44 @@ os.environ["AGNO_TELEMETRY"] = "false"
 ## plot module ##
 @module.ui
 def plot_mod_ui():
-    return ui.div(
-        ui.input_select(
-            "plot_type",
-            "Select Plot Type",
-            choices=["scatter", "line", "bar", "boxplot"],
-            width="100%",
-        ),
-        ui.row(
-            ui.column(
-                6,
-                ui.input_selectize(
-                    "x_var", "X Variable", choices=[], multiple=False, width="100%"
+    return ui.card(
+        ui.accordion(
+            ui.accordion_panel(
+                "Plot",
+                ui.div(
+                    ui.input_select(
+                        "plot_type",
+                        "Select Plot Type",
+                        choices=["scatter", "line", "bar", "boxplot"],
+                        width="100%",
+                    ),
+                    ui.row(
+                        ui.column(
+                            6,
+                            ui.input_selectize(
+                                "x_var",
+                                "X Variable",
+                                choices=[],
+                                multiple=False,
+                                width="100%",
+                            ),
+                        ),
+                        ui.column(
+                            6,
+                            ui.input_selectize(
+                                "y_var",
+                                "Y Variable",
+                                choices=[],
+                                multiple=False,
+                                width="100%",
+                            ),
+                        ),
+                    ),
+                    ui.output_plot("plot"),
                 ),
-            ),
-            ui.column(
-                6,
-                ui.input_selectize(
-                    "y_var", "Y Variable", choices=[], multiple=False, width="100%"
-                ),
-            ),
+            )
         ),
-        ui.output_plot("plot"),
+        full_screen=True,
     )
 
 
@@ -182,7 +198,7 @@ def chat_mod_server(input, output, session, messages):
             if len(state.dataframe()) > 0:
                 # Create unique ID for each plot display instance
                 display_id = f"plot_display_{uuid.uuid4().hex}"
-                await chat.append_message(ui.TagList(f"Plot:", plot_mod_ui(display_id)))
+                await chat.append_message(ui.TagList(plot_mod_ui(display_id)))
                 # Initialize the module server with unique ID and unique dataframe
                 plot_dataframe = state.dataframe.get().copy()
 
