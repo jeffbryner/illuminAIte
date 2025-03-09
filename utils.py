@@ -14,7 +14,7 @@ from agno.storage.agent.sqlite import SqliteAgentStorage
 from agno.memory.db.sqlite import SqliteMemoryDb
 from turbo_duck_tools import TurboDuckTools
 from agno.tools.file import FileTools
-from agno.tools.duckdb import DuckDbTools
+from agno.tools.decorator import tool
 
 agent_storage: str = "tmp/agent_storage.db"
 agent_memory: str = "tmp/agent_memory.db"
@@ -24,10 +24,11 @@ duckdb_config = {"external_threads": 1}
 
 
 # tools
+@tool
 def day_of_week() -> str:
     """Get the current day of the week.
-    Example:
-        {{time.dayOfWeek}} => Sunday
+    Returns:
+        str: The current day of the week.
     """
     now = datetime.datetime.now()
     return now.strftime("%A")
@@ -80,13 +81,13 @@ def get_model(provider: str, model_name: str) -> Model:
         raise SystemExit(1)
 
 
-def get_agent(model_choice: Model) -> Agent:
-    global agent
+def get_agent(model_choice: Model, state) -> Agent:
+
     agent = Agent(
         model=model_choice,
         tools=[
             FileTools(save_files=False, read_files=False),
-            TurboDuckTools(db_path=agent_database, config=duckdb_config),
+            TurboDuckTools(db_path=agent_database, config=duckdb_config, state=state),
         ],
         session_id="illuminAIte_chat_agent",
         session_name="illuminAIte_chat_agent",
