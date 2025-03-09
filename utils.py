@@ -7,6 +7,8 @@ logger.setLevel(logging.INFO)
 
 from agno.models.base import Model
 from agno.agent import Agent, AgentMemory
+from agno.run.response import RunEvent, RunResponse
+
 from agno.memory.classifier import MemoryClassifier
 from agno.memory.summarizer import MemorySummarizer
 from agno.memory.manager import MemoryManager
@@ -32,6 +34,14 @@ def day_of_week() -> str:
     """
     now = datetime.datetime.now()
     return now.strftime("%A")
+
+
+# utility to stream agno run responses to shiny
+def as_stream(response):
+    for chunk in response:
+        if isinstance(chunk, RunResponse) and isinstance(chunk.content, str):
+            if chunk.event == RunEvent.run_response:
+                yield chunk.content
 
 
 # select the provider and model
