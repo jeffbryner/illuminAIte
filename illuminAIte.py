@@ -12,30 +12,22 @@ from shiny import (
 )
 from shiny.express import ui as x_ui
 
-from agno.run.response import RunEvent, RunResponse
 
 from utils import logger
 from utils import get_model
 from utils import get_agent
+from utils import as_stream
 import os
 import argparse
 import json
 from pathlib import Path
 import pandas
-import plotly.express as px
 import random
 from htmltools import HTML
+import matplotlib.pyplot as plt
 
 # turn off telemetry
 os.environ["AGNO_TELEMETRY"] = "false"
-
-
-# utility to stream agno run responses to shiny
-def as_stream(response):
-    for chunk in response:
-        if isinstance(chunk, RunResponse) and isinstance(chunk.content, str):
-            if chunk.event == RunEvent.run_response:
-                yield chunk.content
 
 
 ## plot module ##
@@ -80,7 +72,6 @@ def plot_mod_server(input, output, session, dataframe):
 
     @render.plot
     def plot():
-        import matplotlib.pyplot as plt
 
         if not input.x_var() or not input.y_var():
             return None
@@ -156,25 +147,25 @@ def chat_mod_server(input, output, session, messages):
 
     chat = ui.Chat(id="chat", messages=messages)
 
-    # Load the Gapminder dataset
-    df = px.data.gapminder()
+    # # Load the Gapminder dataset
+    # df = px.data.gapminder()
 
-    # Prepare a summary DataFrame
-    summary_df = (
-        df.groupby("country")
-        .agg(
-            {
-                "pop": ["min", "max", "mean"],
-                "lifeExp": ["min", "max", "mean"],
-                "gdpPercap": ["min", "max", "mean"],
-            }
-        )
-        .reset_index()
-    )
+    # # Prepare a summary DataFrame
+    # summary_df = (
+    #     df.groupby("country")
+    #     .agg(
+    #         {
+    #             "pop": ["min", "max", "mean"],
+    #             "lifeExp": ["min", "max", "mean"],
+    #             "gdpPercap": ["min", "max", "mean"],
+    #         }
+    #     )
+    #     .reset_index()
+    # )
 
-    summary_df.columns = ["_".join(col).strip() for col in summary_df.columns.values]
-    summary_df.rename(columns={"country_": "country"}, inplace=True)
-    state.dataframe.set(summary_df)
+    # summary_df.columns = ["_".join(col).strip() for col in summary_df.columns.values]
+    # summary_df.rename(columns={"country_": "country"}, inplace=True)
+    # state.dataframe.set(summary_df)
 
     plot_mod_server("plot_session", dataframe=state.dataframe)
 
@@ -193,10 +184,10 @@ def chat_mod_server(input, output, session, messages):
         # logger.info(f"fig_html HTML: {ui.TagList(ui.HTML(fig_html)).get_html_string()}")
         # await chat.append_message(ui.TagList(ui.HTML(fig_html)).get_html_string())
 
-        # randomly sort the data to prove reactivity
-        column_choice = random.choice(state.dataframe.get().columns)
-        logger.info(f"sorting dataframe by: {column_choice}")
-        state.dataframe.set(state.dataframe().sort_values(column_choice))
+        # # randomly sort the data to prove reactivity
+        # column_choice = random.choice(state.dataframe.get().columns)
+        # logger.info(f"sorting dataframe by: {column_choice}")
+        # state.dataframe.set(state.dataframe().sort_values(column_choice))
 
     @render.express
     def x_summary_data():
