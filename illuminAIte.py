@@ -11,6 +11,8 @@ from shiny import (
     run_app,
 )
 from shiny.express import ui as x_ui
+from shiny.express import module as x_module
+from shinywidgets import output_widget, render_widget, render_plotly
 
 
 from utils import logger
@@ -27,11 +29,12 @@ from htmltools import HTML
 import matplotlib.pyplot as plt
 import uuid
 
+
 # turn off telemetry
 os.environ["AGNO_TELEMETRY"] = "false"
 
 
-## plot module ##
+## matplot module ##
 @module.ui
 def plot_mod_ui():
     return ui.card(
@@ -115,7 +118,92 @@ def plot_mod_server(input, output, session, dataframe):
         return fig
 
 
-## end plot module ##
+## end matplot module ##
+
+
+## plotly module ##
+@module.ui
+def plotly_mod_ui():
+    return ui.card(
+        ui.accordion(
+            ui.accordion_panel(
+                "Plotly Plot",
+                ui.div(
+                    ui.input_select(
+                        "plotly_type",
+                        "Select Plot Type",
+                        choices=["scatter", "line", "histogram", "box"],
+                        width="100%",
+                    ),
+                    ui.row(
+                        ui.column(
+                            6,
+                            ui.input_selectize(
+                                "px_x_var",
+                                "X Variable",
+                                choices=[],
+                                multiple=False,
+                                width="100%",
+                            ),
+                        ),
+                        ui.column(
+                            6,
+                            ui.input_selectize(
+                                "px_y_var",
+                                "Y Variable",
+                                choices=[],
+                                multiple=False,
+                                width="100%",
+                            ),
+                        ),
+                    ),
+                    output_widget("plotly_plot"),
+                ),
+            )
+        ),
+        full_screen=True,
+    )
+
+
+@module.server
+def plotly_mod_server(input, output, session, dataframe):
+    @reactive.effect
+    def update_var_choices():
+        choices = dataframe.columns.tolist()
+        ui.update_selectize(
+            "px_x_var", choices=choices, selected=choices[0] if choices else None
+        )
+        ui.update_selectize(
+            "px_y_var",
+            choices=choices,
+            selected=choices[1] if len(choices) > 1 else None,
+        )
+
+    @render_widget
+    def plotly_plot():
+        import plotly.express as px
+
+        if not input.px_x_var() or not input.px_y_var():
+            return None
+
+        df = dataframe
+        plot_type = input.plotly_type()
+
+        if plot_type == "scatter":
+            fig = px.scatter(df, x=input.px_x_var(), y=input.px_y_var())
+        elif plot_type == "line":
+            fig = px.line(df, x=input.px_x_var(), y=input.px_y_var())
+        elif plot_type == "histogram":
+            fig = px.histogram(df, x=input.px_x_var())
+        elif plot_type == "box":
+            fig = px.box(df, x=input.px_x_var(), y=input.px_y_var())
+
+        fig.update_layout(xaxis_title=input.px_x_var(), yaxis_title=input.px_y_var())
+
+        return fig
+
+
+## end plotly module ##
 
 
 ## dataframe module ##
@@ -189,7 +277,7 @@ def chat_mod_server(input, output, session, messages):
                 )
                 return
 
-        if "show plot" in new_message.lower():
+        if "show matplot" in new_message.lower():
             if len(state.dataframe()) > 0:
                 # Create unique ID for each plot display instance
                 display_id = f"plot_display_{uuid.uuid4().hex}"
@@ -204,6 +292,22 @@ def chat_mod_server(input, output, session, messages):
                     "no dataframe to plot, try instructing the agent to load data into the dataframe"
                 )
                 return
+        if "show plotly" in new_message.lower():
+            if len(state.dataframe()) > 0:
+                display_id = f"plotly_display_{uuid.uuid4().hex}"
+                logger.info(f"plotly display id: {display_id}")
+                await chat.append_message(
+                    ui.TagList(plotly_mod_ui(display_id)),
+                )
+                plot_dataframe = state.dataframe.get().copy()
+                plotly_mod_server(display_id, dataframe=plot_dataframe)
+                return
+            else:
+                await chat.append_message(
+                    "no dataframe to plot, try instructing the agent to load data into the dataframe"
+                )
+                return
+
         # else let the agent handle the response
         chunks = agent.run(message=new_message, stream=True)
         await chat.append_message_stream(as_stream(chunks))
