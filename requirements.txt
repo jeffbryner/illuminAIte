@@ -7,3 +7,7 @@ google-genai
 itsdangerous
 pandas
 openai
+matplotlib
+plotly
+pandas
+shinywidgets
