@@ -13,10 +13,10 @@ from shiny import (
 from shiny.express import ui as x_ui
 from shinywidgets import output_widget, render_widget
 
-from utils import logger
-from utils import get_model
-from utils import get_agent
-from utils import as_stream
+from lib.utils import logger
+from lib.utils import get_model
+from lib.utils import get_agent
+from lib.utils import as_stream
 import os
 import argparse
 import json
