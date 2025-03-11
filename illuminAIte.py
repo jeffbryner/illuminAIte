@@ -310,16 +310,6 @@ def chat_mod_server(input, output, session, messages):
         chunks = agent.run(message=new_message, stream=True)
         await chat.append_message_stream(as_stream(chunks))
 
-    # @render.express
-    # def x_summary_data():
-    #     with x_ui.card(height="400px"):
-
-    #         @render.data_frame
-    #         def summary_data():
-    #             return render.DataGrid(
-    #                 state.dataframe().round(2),
-    #             )
-
     # @reactive.effect
     # async def dataframe_changed():
     #     state.dataframe()
