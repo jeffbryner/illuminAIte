@@ -2,11 +2,33 @@ from typing import Any, Dict, List, Optional, Tuple
 from agno.tools.duckdb import DuckDbTools
 from agno.tools import Toolkit
 from agno.utils.log import logger
+import duckdb
 
 # add some utility functions to the DuckDuckGoTools
 
 
 class TurboDuckTools(DuckDbTools):
+    def __init__(
+        self,
+        db_path: Optional[str] = None,
+        connection: Optional[duckdb.DuckDBPyConnection] = None,
+        init_commands: Optional[List] = None,
+        read_only: bool = False,
+        config: Optional[dict] = None,
+        state=None,
+    ):
+        super().__init__(
+            db_path=db_path,
+            connection=connection,
+            init_commands=init_commands,
+            read_only=read_only,
+            config=config,
+        )
+        # add our shiny state to the tools
+        self.state = state
+        self.register(self.load_dynamic_dataframe)
+        self.register(self.load_local_json_to_table)
+
     def load_local_json_to_table(
         self, path: str, table: Optional[str]
     ) -> Tuple[str, str]:
@@ -40,3 +62,15 @@ class TurboDuckTools(DuckDbTools):
 
         logger.debug(f"Loaded JSON {path} into duckdb as {table}")
         return table, create_statement
+
+    def load_dynamic_dataframe(self, query: str) -> str:
+        """Updates the dynamic dataframe with the results of a query
+
+        :param query: Query to use to update the dataframe data, always use a limit of 1000 rows
+        :return: A description of the update to use in chat.
+        """
+        # Execute query and update the reactive dataframe
+        result_df = self.connection.sql(query).df()
+        self.state.dataframe.set(result_df)
+
+        return f"Dataframe data updated with {len(result_df)} rows from query: {query}"
