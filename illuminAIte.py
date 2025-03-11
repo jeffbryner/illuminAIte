@@ -11,9 +11,7 @@ from shiny import (
     run_app,
 )
 from shiny.express import ui as x_ui
-from shiny.express import module as x_module
-from shinywidgets import output_widget, render_widget, render_plotly
-
+from shinywidgets import output_widget, render_widget
 
 from utils import logger
 from utils import get_model
@@ -27,6 +25,7 @@ import pandas
 import random
 from htmltools import HTML
 import matplotlib.pyplot as plt
+import plotly.express as px
 import uuid
 
 
@@ -181,7 +180,6 @@ def plotly_mod_server(input, output, session, dataframe):
 
     @render_widget
     def plotly_plot():
-        import plotly.express as px
 
         if not input.px_x_var() or not input.px_y_var():
             return None
@@ -254,8 +252,6 @@ def chat_mod_server(input, output, session, messages):
 
     chat = ui.Chat(id="chat", messages=messages)
 
-    # plot_mod_server("plot_session", dataframe=state.dataframe.get().copy())
-
     @chat.on_user_submit
     async def _():
         new_message = chat.user_input()
@@ -292,13 +288,15 @@ def chat_mod_server(input, output, session, messages):
                     "no dataframe to plot, try instructing the agent to load data into the dataframe"
                 )
                 return
-        if "show plotly" in new_message.lower():
+        if "show plot" in new_message.lower() or "show plotly" in new_message.lower():
             if len(state.dataframe()) > 0:
+                # Create unique ID for each plot display instance
                 display_id = f"plotly_display_{uuid.uuid4().hex}"
                 logger.info(f"plotly display id: {display_id}")
                 await chat.append_message(
                     ui.TagList(plotly_mod_ui(display_id)),
                 )
+                # Initialize the module server with unique ID and unique dataframe
                 plot_dataframe = state.dataframe.get().copy()
                 plotly_mod_server(display_id, dataframe=plot_dataframe)
                 return
@@ -312,15 +310,15 @@ def chat_mod_server(input, output, session, messages):
         chunks = agent.run(message=new_message, stream=True)
         await chat.append_message_stream(as_stream(chunks))
 
-    @render.express
-    def x_summary_data():
-        with x_ui.card(height="400px"):
+    # @render.express
+    # def x_summary_data():
+    #     with x_ui.card(height="400px"):
 
-            @render.data_frame
-            def summary_data():
-                return render.DataGrid(
-                    state.dataframe().round(2),
-                )
+    #         @render.data_frame
+    #         def summary_data():
+    #             return render.DataGrid(
+    #                 state.dataframe().round(2),
+    #             )
 
     # @reactive.effect
     # async def dataframe_changed():
