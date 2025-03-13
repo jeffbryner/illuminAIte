@@ -15,6 +15,7 @@ from agno.memory.manager import MemoryManager
 from agno.storage.agent.sqlite import SqliteAgentStorage
 from agno.memory.db.sqlite import SqliteMemoryDb
 from lib.turbo_duck_tools import TurboDuckTools
+from lib.plotly_chart_tools import PlotlyChartTools
 from agno.tools.file import FileTools
 from agno.tools.decorator import tool
 from pathlib import Path
@@ -102,6 +103,7 @@ def get_agent(model_choice: Model, state) -> Agent:
                 base_dir=Path("./data_files"), save_files=False, read_files=False
             ),
             TurboDuckTools(db_path=agent_database, config=duckdb_config, state=state),
+            PlotlyChartTools(state=state),
         ],
         session_id="illuminAIte_chat_agent",
         session_name="illuminAIte_chat_agent",
@@ -143,4 +145,5 @@ def get_agent(model_choice: Model, state) -> Agent:
         ),
     )
 
+    agent.tool_message_role = "user"
     return agent
