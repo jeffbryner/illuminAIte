@@ -20,6 +20,7 @@ import os
 import json
 import uuid
 import pandas
+import re
 
 
 ## chat module ##
@@ -52,7 +53,7 @@ def chat_mod_server(input, output, session, messages):
     async def _():
         new_message = chat.user_input()
         # check for special messages
-        if "show dataframe" in new_message.lower():
+        if re.search(r"(show|display) (dataframe|datagrid|grid)", new_message.lower()):
             if len(state.dataframe()) > 0:
                 # Create unique ID for each dataframe display instance
                 display_id = f"dataframe_display_{uuid.uuid4().hex}"
@@ -69,7 +70,7 @@ def chat_mod_server(input, output, session, messages):
                 )
                 return
 
-        if "show matplot" in new_message.lower():
+        if re.search(r"(show|display) matplot", new_message.lower()):
             if len(state.dataframe()) > 0:
                 # Create unique ID for each plot display instance
                 display_id = f"plot_display_{uuid.uuid4().hex}"
@@ -84,7 +85,7 @@ def chat_mod_server(input, output, session, messages):
                     "no dataframe to plot, try instructing the agent to load data into the dataframe"
                 )
                 return
-        if "show plot" in new_message.lower() or "show plotly" in new_message.lower():
+        if re.search(r"(show|display) (graph|plot|plotly)", new_message.lower()):
             if len(state.dataframe()) > 0:
                 # Create unique ID for each plot display instance
                 display_id = f"plotly_display_{uuid.uuid4().hex}"
