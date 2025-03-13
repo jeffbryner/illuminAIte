@@ -2,8 +2,8 @@ from shiny import (
     App,
     run_app,
 )
-from lib.utils import logger
-from lib.chat import agno_chat_server, app_page_chat_ui
+from app.utils import logger
+from app.chat import agno_chat_server, app_page_chat_ui
 import os
 import argparse
 import json
