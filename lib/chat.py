@@ -44,9 +44,10 @@ def chat_mod_server(input, output, session, messages):
     config = json.loads(os.environ["_ILLUMINAITE_CONFIG"])
     logger.info(f"{config['provider']} {config['model_name']}")
     state.model_choice = get_model(config["provider"], config["model_name"])
-    agent = get_agent(model_choice=state.model_choice, state=state)
-
     chat = ui.Chat(id="chat", messages=messages)
+    # reference chat in state for tools
+    state.chat = chat
+    agent = get_agent(model_choice=state.model_choice, state=state)
 
     @chat.on_user_submit
     async def _():
@@ -89,9 +90,7 @@ def chat_mod_server(input, output, session, messages):
                 # Create unique ID for each plot display instance
                 display_id = f"plotly_display_{uuid.uuid4().hex}"
                 logger.info(f"plotly display id: {display_id}")
-                await chat.append_message(
-                    ui.TagList(plotly_mod_ui(display_id)),
-                )
+                await chat.append_message(ui.TagList(plotly_mod_ui(display_id)))
                 # Initialize the module server with unique ID and unique dataframe
                 plot_dataframe = state.dataframe.get().copy()
                 plotly_mod_server(display_id, dataframe=plot_dataframe)
