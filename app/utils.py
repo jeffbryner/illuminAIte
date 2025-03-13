@@ -14,7 +14,7 @@ from agno.memory.summarizer import MemorySummarizer
 from agno.memory.manager import MemoryManager
 from agno.storage.agent.sqlite import SqliteAgentStorage
 from agno.memory.db.sqlite import SqliteMemoryDb
-from lib.turbo_duck_tools import TurboDuckTools
+from app.turbo_duck_tools import TurboDuckTools
 from agno.tools.file import FileTools
 from agno.tools.decorator import tool
 from pathlib import Path
@@ -60,7 +60,7 @@ def get_model(provider: str, model_name: str) -> Model:
 
     elif provider == "google":
         try:
-            from lib.gemini_models import model_flash, model_pro
+            from app.gemini_models import model_flash, model_pro
 
             if model_name == "gemini-1.5-pro":
                 return model_pro
@@ -82,7 +82,7 @@ def get_model(provider: str, model_name: str) -> Model:
 
     # Default case
     try:
-        from lib.gemini_models import model_flash
+        from app.gemini_models import model_flash
 
         return model_flash
     except ImportError:
