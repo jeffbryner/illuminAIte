@@ -23,9 +23,7 @@ def dataframe_display_mod_server(input, output, session, dataframe):
 
                     @render.data_frame
                     def summary_data():
-                        return render.DataGrid(
-                            dataframe.round(2),
-                        )
+                        return render.DataGrid(dataframe.round(2), filters=True)
 
 
 ## end dataframe module ##
