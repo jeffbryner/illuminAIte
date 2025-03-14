@@ -1,17 +1,21 @@
 # illuminAIte  
-Use AI agents to have an interactive data conversation with your local data files
+Use AI agents to have an interactive data conversation with your local data files.
 
 ## Why?
 
 Data is everywhere in security. You have data about vulnerabilities, alerts, threats, forensic artifacts. It’s stored in a variety of formats, behind a variety of consoles, applications, command line tools, etc.
+
 Making sense of that data is difficult. You need to format it, analyze it, decide what is useful, etc.
+
 What if you could use AI to have a conversational interaction with your data in a way that lets you:
 
 - Rapidly get an overview
 - Have a conversation about the data
 - Gain insights
 
-IlluminAIte aims to accomplish this by bringing data to an AI agent in conjunction with simple tools in a way that allows you to meet your data where it lies (.csv, .json files), get insights as quickly as possible and do it without having to write complicated queries or learn yet another language.
+IlluminAIte (a play on illuminate suggested by AI) aims to accomplish this by bringing data to an AI agent in conjunction with simple tools in a way that allows you to meet your data where it lies (.csv, .json files), get insights as quickly as possible and do it without having to write complicated queries or learn yet another language.
+
+The best security tools are simple ones that do a job well. IlluminAIte aims to be a straightforward and easy to way to harness the power of AI to make sense of your data.
 
 ## Sample session
 
@@ -70,12 +74,55 @@ You can ask it things like:
 Depending on your LLM, it will be able to make liberal use of SQL to query the data. It may need some help with complex data elements like nested json, but you can assist it in your chat session. 
 If it runs into errors, it will ask you to help it.
 
+### Key Phrases
+There are trigger phrases in the interface to do things that LLMs can't currently do. While there are libraries to display data grids and graphs for example, LLMs can't usually return a graph or table.
+
+#### Phrase
+- "load the dataframe"
+
+This phrase will trigger the engine to load whatever data you've been chatting about into a pandas dataframe for use in a table/grid or a graph.
+
+#### Phrase
+- "show graph", "display graph", "display plot
+
+Any of these phrases will trigger the engine to load the current dataframe into a plotly graph. You can then use the controls in the graph to choose the style of graph, the x/y coordinates, etc 
+
+#### Phrase
+- "show table", "show grid", "display grid"
+
+Any of these phrases will trigger the engine to load the current dataframe into a dynamic data grid. You can use the grid to scroll through data, sort, filter, etc. 
+
 
 ## Configuration
-~coming soon~
+To use other LLMs: 
+
+### Ollama
+First choose your model and download it to your local machine. Then you can run illuminAIte.py with the --provider=ollama flag.
+
+```
+# download the model
+ollama pull llama2:13b
+python illuminAIte.py --provider=ollama --model-name=llama2:13b
+
+```
+### OpenAI
+
+Export your OPENAI_API_KEY as an environment variable, then run illuminAIte.py
+```
+export OPENAI_API_KEY=<your key>
+python illuminAIte.py --provider=openai --model-name=gtp-4o
+
+```
+
+### Gemini via api key
+Export your GEMINI_API_KEY as an environment variable, then run illuminAIte.py
+```
+export GEMINI_API_KEY=<your key>
+python illuminAIte.py --provider=gemini --model-name=gemini-1.5-pro
+```
 
 ## Data sources
-It can use any local csv  or json file.
+It can use any local csv  or json file. Store the files in the ./data directory and ask the agent something like "what data can we chat about?" and it will list the files it can use.
 
 ## Agents
 We are using the agent framework from [agno](https://github.com/agno-agi/agno).
@@ -84,5 +131,17 @@ It includes storage for sessions, tools for interacting with the data and a memo
 
 Duckdb is used for the data analysis and stores tables locally after reading in the file you are chatting about.
 
-To clear all the local memory just remove the ./tmp directory. 
+To reset by clearing all the local memory just remove the ./tmp directory. It contains sqlite files storing the session, memory, duckdb tables, etc. 
+
+
+## Data Handling & Bias Mitigation
+All memories, session and duckdb data is stored locally and is not sent to any external servers. The system instructions specifically prohibit the LLM from using tools to send raw data files directly to the LLM.
+
+Depending on your choice of model, you may send chat session to openai/google. If you run ollama, all traffic is local.. 
+
+There is by default a duck duck go tool that allows searching the internet. You can disable this if you want by simply removing the tool. 
+
+The repo includes publically accessible sample data that you can use to test the system without exposing any sensitive data of your own.
+
+The gemini models include safety settings that are turned on by default. You can tweak them as you like.
 

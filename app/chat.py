@@ -53,7 +53,9 @@ def chat_mod_server(input, output, session, messages):
     async def _():
         new_message = chat.user_input()
         # check for special messages
-        if re.search(r"(show|display) (dataframe|datagrid|grid)", new_message.lower()):
+        if re.search(
+            r"(show|display) (dataframe|datagrid|grid|table)", new_message.lower()
+        ):
             if len(state.dataframe()) > 0:
                 # Create unique ID for each dataframe display instance
                 display_id = f"dataframe_display_{uuid.uuid4().hex}"

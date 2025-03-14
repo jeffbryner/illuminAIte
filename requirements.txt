@@ -7,6 +7,7 @@ google-genai
 itsdangerous
 pandas
 openai
+ollama
 matplotlib
 plotly
 pandas
