@@ -131,7 +131,13 @@ def agno_chat_server(input: Inputs, output: Outputs, session: Session):
     @render.ui
     def chat():
 
-        chat_messages = []
+        chat_messages = [
+            ui.TagList(
+                ui.span("what data can we chat about?")
+                .add_class("suggestion")
+                .add_class("submit")
+            ),
+        ]
         # start the module server
         chat_mod_server("chat_session", messages=chat_messages)
         # start the module UI
