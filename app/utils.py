@@ -120,6 +120,9 @@ def get_agent(model_choice: Model, state) -> Agent:
             "You can then use duckdb to answer questions",
             "You can also search the internet with DuckDuckGo.",
             "Never send the local files to the internet, or to the AI model directly.",
+            "You can not graph data. If asked, tell your partner to type in 'show graph' to trigger a graph",
+            "You can't display tabular data, tell your partner to 'show grid' to trigger a grid/table display"
+            "Be sure to use your tools to load or refresh the dataframe often with the current target data to get the latest information.",
         ],
         description="You are an expert in computer security and data analysis.",
         storage=SqliteAgentStorage(

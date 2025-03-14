@@ -138,7 +138,6 @@ def agno_chat_server(input: Inputs, output: Outputs, session: Session):
                 .add_class("submit")
             ),
         ]
-        # chat_messages = []
         # start the module server
         chat_mod_server("chat_session", messages=chat_messages)
         # start the module UI
