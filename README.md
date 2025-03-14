@@ -18,6 +18,12 @@ IlluminAIte aims to accomplish this by bringing data to an AI agent in conjuncti
 Here's a sample session with a csv file containing a [sample set of alerts from suricata](https://github.com/Cyb3r-Monk/RITA-J/blob/main/sample-data/suricata%20alerts.csv)
 ![chat session](./images/sample_chat_session.png)
 
+Here's another showing the ability to display graphs
+![graph session](./images/sample_graph_session.png)
+
+Another sample showing the ability to display a table grid of dataframe data
+![table session](./images/sample_grid_session.png)
+
 ## Installation
 Recommended to use a virtual python environment seeded with uv
 - https://docs.astral.sh/uv/getting-started/installation/
@@ -52,6 +58,18 @@ uv pip install -r requirements.txt
 # gcloud config is set up with the project you want to use
 python illuminAIte.py
 ```
+You can ask it things like:
+- What data can we chat about?
+- Load < filename >
+- Load the dataframe with the last X < data element > from < timeperiod >
+- show graph (will trigger the dynamic graph)
+- show table (will trigger the dynamic grid with a table view of the dataframe)
+- what is the most frequent < data element >
+- etc.
+
+Depending on your LLM, it will be able to make liberal use of SQL to query the data. It may need some help with complex data elements like nested json, but you can assist it in your chat session. 
+If it runs into errors, it will ask you to help it.
+
 
 ## Configuration
 ~coming soon~
