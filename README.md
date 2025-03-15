@@ -30,7 +30,7 @@ Another sample showing the ability to display a table grid of dataframe data
 
 Here's a video session showing correcting from mistakes, using plots and dataframes
 [![video session](https://img.youtube.com/vi/KnX_4-sD7Hg/0.jpg)](https://www.youtube.com/watch?v=KnX_4-sD7Hg)
-![video session](https://youtu.be/KnX_4-sD7Hg)
+
 
 ## Installation
 Recommended to use a virtual python environment seeded with uv
