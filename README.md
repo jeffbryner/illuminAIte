@@ -17,7 +17,7 @@ IlluminAIte (a play on illuminate suggested by AI) aims to accomplish this by br
 
 The best security tools are simple ones that do a job well. IlluminAIte aims to be a straightforward and easy to way to harness the power of AI to make sense of your data.
 
-## Sample session
+## Sample sessions
 
 Here's a sample session with a csv file containing a [sample set of alerts from suricata](https://github.com/Cyb3r-Monk/RITA-J/blob/main/sample-data/suricata%20alerts.csv)
 ![chat session](./images/sample_chat_session.png)
@@ -27,6 +27,9 @@ Here's another showing the ability to display graphs
 
 Another sample showing the ability to display a table grid of dataframe data
 ![table session](./images/sample_grid_session.png)
+
+Here's a video session showing correcting from mistakes, using plots and dataframes
+![video session](https://youtu.be/KnX_4-sD7Hg)
 
 ## Installation
 Recommended to use a virtual python environment seeded with uv
@@ -94,6 +97,7 @@ Any of these phrases will trigger the engine to load the current dataframe into 
 
 
 ## Configuration
+Gemini in Vertext performed best during development so it is the default. 
 To use other LLMs: 
 
 ### Ollama
@@ -109,16 +113,16 @@ python illuminAIte.py --provider=ollama --model-name=llama2:13b
 
 Export your OPENAI_API_KEY as an environment variable, then run illuminAIte.py
 ```
-export OPENAI_API_KEY=<your key>
-python illuminAIte.py --provider=openai --model-name=gtp-4o
+export OPENAI_API_KEY=yourkey
+python illuminAIte.py --provider=openai --model-name=gpt-4o
 
 ```
 
 ### Gemini via api key
 Export your GEMINI_API_KEY as an environment variable, then run illuminAIte.py
 ```
-export GEMINI_API_KEY=<your key>
-python illuminAIte.py --provider=gemini --model-name=gemini-1.5-pro
+export GEMINI_API_KEY=yourkey
+python illuminAIte.py --provider=gemini --model-name=gemini-2.0-flash
 ```
 
 ## Data sources
@@ -144,4 +148,27 @@ There is by default a duck duck go tool that allows searching the internet. You 
 The repo includes publically accessible sample data that you can use to test the system without exposing any sensitive data of your own.
 
 The gemini models include safety settings that are turned on by default. You can tweak them as you like.
+
+## Troubleshooting
+Agents with tools are a relatively new concept and the apis for all the libraries are moving fast. If you have problems the best bet is to use a newer version of the model, or change models. Gemini flash in vertex performed the best during development, GPT4o was the best for the openai models. The llama3.2 used during testing perfomed ok for basic use but often has issues with tools. 
+
+The agent at the heart of this uses a lot of tools for summarizing the conversation, storing memories, interacting with the data, etc. You can try turning off components of the agent to see if that helps. You will find the options in the get_agent function in utils.py.
+
+Particular options that may help:
+```
+debug_mode=True # enables debug mode with verbose output to the console displaying all the tools, history, etc
+show_tool_calls=False, # turns off attempts to display the tool calls in the chat
+add_history_to_messages=True #adds the history including tool calls to the chat, turn off to prevent all history from being sent to the LLM
+
+# lastly this stanza invoking agent memory can be turned off, but will limit the ability of the agent to remember key points in the conversation
+        memory=AgentMemory(
+            db=SqliteMemoryDb(db_file=agent_memory),
+            create_user_memories=True,
+            create_session_summary=True,
+            update_user_memories_after_run=True,
+            update_session_summary_after_run=True,
+            classifier=MemoryClassifier(model=model_choice),
+            summarizer=MemorySummarizer(model=model_choice),
+            manager=MemoryManager(model=model_choice),
+        ),
 
