@@ -24,7 +24,9 @@ agent_storage: str = "tmp/agent_storage.db"
 agent_memory: str = "tmp/agent_memory.db"
 agent_database: str = "tmp/agent_database.db"
 # https://duckdb.org/docs/stable/configuration/overview.html#configuration-reference
-duckdb_config = {"external_threads": 1}
+# sample config
+# duckdb_config = {"external_threads": 1}
+duckdb_config = {}
 
 
 # tools
@@ -58,18 +60,6 @@ def get_model(provider: str, model_name: str) -> Model:
             print("pip install openai")
             raise SystemExit(1)
 
-    elif provider == "google":
-        try:
-            from app.gemini_models import model_flash, model_pro
-
-            if model_name == "gemini-1.5-pro":
-                return model_pro
-            return model_flash
-        except ImportError:
-            print("Google/Gemini support requires additional packages. Install with:")
-            print("pip install google-genai")
-            raise SystemExit(1)
-
     elif provider == "ollama":
         try:
             from agno.models.ollama import Ollama
@@ -79,21 +69,23 @@ def get_model(provider: str, model_name: str) -> Model:
             print("Ollama support requires additional packages. Install with:")
             print("pip install ollama")
             raise SystemExit(1)
+    else:  # default is google
+        try:
+            from app.gemini_models import get_gemini_model
 
-    # Default case
-    try:
-        from app.gemini_models import model_flash
-
-        return model_flash
-    except ImportError:
-        print(
-            "Default Google/Gemini support requires additional packages. Install with:"
-        )
-        print("pip install google-genai")
-        raise SystemExit(1)
+            return get_gemini_model()
+        except ImportError:
+            print("Google/Gemini support requires additional packages. Install with:")
+            print("pip install google-genai")
+            raise SystemExit(1)
 
 
 def get_agent(model_choice: Model, state) -> Agent:
+
+    # TODO customize the agent per provider
+    # llama has trouble with history including tool messages and appears to need more guidance for using tools
+    # gemini needs the tool messages to not have the tool as role
+    # TODO toggle debug mode from command line switch
 
     agent = Agent(
         model=model_choice,
@@ -107,9 +99,10 @@ def get_agent(model_choice: Model, state) -> Agent:
         session_name="illuminAIte_chat_agent",
         user_id="illuminAIte_chat_agent",
         markdown=True,
-        show_tool_calls=True,
+        show_tool_calls=False,
         telemetry=False,
         monitoring=False,
+        debug_mode=False,
         instructions=[
             "You have a set of local csv and json files to answer questions about.",
             "Use your file tools to list ONLY .csv or .json files. Never list other files."
