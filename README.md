@@ -164,11 +164,22 @@ The agent at the heart of this uses a lot of tools for summarizing the conversat
 
 Particular options that may help:
 ```
-debug_mode=True # enables debug mode with verbose output to the console displaying all the tools, history, etc
-show_tool_calls=False, # turns off attempts to display the tool calls in the chat
-add_history_to_messages=True #adds the history including tool calls to the chat, turn off to prevent all history from being sent to the LLM
+# enables/disables debug mode with verbose output
+# to the console displaying all the tools, history, etc
+debug_mode=True 
 
-# lastly this stanza invoking agent memory can be turned off, but will limit the ability of the agent to remember key points in the conversation
+# turns off attempts to display the tool calls in the chat
+# works best in gemini 1.5 flash in vertex
+# causes issues in other scenarios
+show_tool_calls=False, 
+
+# adds the history
+# including tool calls to the chat,
+# turn off to prevent all history from being sent to the LLM
+add_history_to_messages=True 
+
+# lastly this stanza invoking agent memory can be turned off,
+# but will limit the ability of the agent to remember key points in the conversation
         memory=AgentMemory(
             db=SqliteMemoryDb(db_file=agent_memory),
             create_user_memories=True,
