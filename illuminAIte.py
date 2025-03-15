@@ -25,8 +25,8 @@ def main():
     )
     parser.add_argument(
         "--model-name",
-        help="Specify the model name/id (e.g. gpt-4, gemini-1.5-flash, llama2)",
-        default="gemini-2.0-flash",
+        help="Specify the model name/id (e.g. gpt-4, gemini-2.0-flash, llama2)",
+        default="gemini-1.5-flash",
     )
     parser.add_argument(
         "--location",
