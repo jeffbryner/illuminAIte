@@ -85,6 +85,8 @@ def get_agent(model_choice: Model, state) -> Agent:
     # TODO customize the agent per provider
     # llama has trouble with history including tool messages and appears to need more guidance for using tools
     # gemini needs the tool messages to not have the tool as role
+    # gemini via api key has trouble if show tool calls is true, via vertex it does not
+
     # TODO toggle debug mode from command line switch
 
     agent = Agent(
