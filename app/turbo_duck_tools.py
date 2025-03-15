@@ -29,9 +29,7 @@ class TurboDuckTools(DuckDbTools):
         self.register(self.load_dynamic_dataframe)
         self.register(self.load_local_json_to_table)
 
-    def load_local_json_to_table(
-        self, path: str, table: Optional[str]
-    ) -> Tuple[str, str]:
+    def load_local_json_to_table(self, path: str, table: Optional[str]) -> str:
         """Load a local JSON file into duckdb
 
         :param path: Path to the json file
@@ -55,13 +53,13 @@ class TurboDuckTools(DuckDbTools):
                 .replace("/", "_")
             )
 
-        select_statement = f"SELECT * FROM read_json('{path}'"
+        select_statement = f"SELECT * FROM read_json('{path}')"
 
         create_statement = f"CREATE OR REPLACE TABLE '{table}' AS {select_statement};"
         self.run_query(create_statement)
 
         logger.debug(f"Loaded JSON {path} into duckdb as {table}")
-        return table, create_statement
+        return create_statement
 
     def load_dynamic_dataframe(self, query: str) -> str:
         """Updates the dynamic dataframe with the results of a query
