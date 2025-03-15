@@ -60,6 +60,10 @@ uv pip install -r requirements.txt
 ```
 
 ## Usage
+The best experience so far is via Gemini flash 1.5 in VertexAI. Other experiences are supported (Gemini via api key, ollama, openai), but may take additional conversation to get the desired conversational effect. 
+
+The next best approach is to use openai gpt-4o.
+
 ```
 # to use everything as default
 # assumes you will use gemini in vertexAI and your local 
@@ -99,17 +103,9 @@ Any of these phrases will trigger the engine to load the current dataframe into 
 
 ## Configuration
 Gemini in Vertext performed best during development so it is the default. 
+
 To use other LLMs: 
 
-### Ollama
-First choose your model and download it to your local machine. Then you can run illuminAIte.py with the --provider=ollama flag.
-
-```
-# download the model
-ollama pull llama2:13b
-python illuminAIte.py --provider=ollama --model-name=llama2:13b
-
-```
 ### OpenAI
 
 Export your OPENAI_API_KEY as an environment variable, then run illuminAIte.py
@@ -125,6 +121,17 @@ Export your GEMINI_API_KEY as an environment variable, then run illuminAIte.py
 export GEMINI_API_KEY=yourkey
 python illuminAIte.py --provider=gemini --model-name=gemini-2.0-flash
 ```
+
+### Ollama
+First choose your model and download it to your local machine. Then you can run illuminAIte.py with the --provider=ollama flag.
+
+```
+# download the model
+ollama pull llama2:13b
+python illuminAIte.py --provider=ollama --model-name=llama2:13b
+
+```
+
 
 ## Data sources
 It can use any local csv  or json file. Store the files in the ./data directory and ask the agent something like "what data can we chat about?" and it will list the files it can use.
