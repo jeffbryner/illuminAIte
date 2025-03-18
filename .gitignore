@@ -173,6 +173,6 @@ cython_debug/
 
 # custom
 tmp/*
-*.json
-*.csv
+#*.json
+#*.csv
 .DS_Store
