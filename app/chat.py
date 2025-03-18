@@ -41,7 +41,7 @@ def chat_mod_server(input, output, session, messages):
     state.dataframe = reactive.value(pandas.DataFrame())
 
     # pull in our environment variables for configuration
-    logger.debug(f"ENVIRON: {os.environ["_ILLUMINAITE_CONFIG"]}")
+    logger.debug(f"ENVIRON: {os.environ['_ILLUMINAITE_CONFIG']}")
     config = json.loads(os.environ["_ILLUMINAITE_CONFIG"])
     logger.info(f"{config['provider']} {config['model_name']}")
     state.model_choice = get_model(config["provider"], config["model_name"])
